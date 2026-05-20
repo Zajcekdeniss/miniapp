@@ -57,7 +57,28 @@
     .page.active { display: block; }
 
     /* ── CHECKLIST ── */
-    .event-section { margin-bottom: 28px; }
+    .day-block { margin-bottom: 8px; }
+    .day-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 22px 4px 10px;
+    }
+    .day-block:first-child .day-header { padding-top: 8px; }
+    .day-label {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .day-label.today { color: var(--accent); }
+    .day-label.tomorrow { color: var(--text); }
+    .day-date {
+      font-size: 13px;
+      color: var(--hint);
+      text-transform: capitalize;
+    }
+
+    .event-section { margin-bottom: 20px; }
     .event-header { margin-bottom: 10px; padding: 0 4px; }
     .event-title {
       font-size: 13px;
@@ -67,9 +88,10 @@
       letter-spacing: 0.06em;
     }
     .event-meta {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--hint);
-      margin-top: 4px;
+      margin-top: 5px;
+      font-weight: 500;
     }
 
     .item {
@@ -436,6 +458,11 @@
       catch { return null; }
     }
 
+    function fmtDate(dateStr) {
+      try { return new Date(dateStr + 'T00:00:00').toLocaleDateString('sl-SI', { weekday: 'long', day: 'numeric', month: 'long' }); }
+      catch { return dateStr; }
+    }
+
     function render(items) {
       if (!items.length) {
         document.getElementById('error').textContent = 'Ni checklistov za ta dan.';
@@ -443,28 +470,55 @@
         return;
       }
       const container = document.getElementById('items');
-      const groups = {};
+      const today    = new Date().toISOString().split('T')[0];
+      const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+      // group by day → event
+      const byDay = {};
       items.forEach(row => {
+        const day = row.datum || today;
+        if (!byDay[day]) byDay[day] = {};
         const key = row.event_title || '—';
-        if (!groups[key]) groups[key] = { rows: [], time: row.event_time, loc: row.event_location };
-        groups[key].rows.push(row);
+        if (!byDay[day][key]) byDay[day][key] = { rows: [], time: row.event_time, loc: row.event_location };
+        byDay[day][key].rows.push(row);
       });
 
-      Object.entries(groups).forEach(([title, { rows, time, loc }]) => {
-        const sec = document.createElement('div');
-        sec.className = 'event-section';
+      Object.keys(byDay).sort().forEach((day, i) => {
+        const dayBlock = document.createElement('div');
+        dayBlock.className = 'day-block';
 
-        const hdr = document.createElement('div');
-        hdr.className = 'event-header';
-        hdr.innerHTML = `<div class="event-title">${title}</div>`;
+        // day header
+        const dayHdr = document.createElement('div');
+        dayHdr.className = 'day-header';
+        const isToday    = day === today;
+        const isTomorrow = day === tomorrow;
+        const label      = isToday ? 'Danes' : isTomorrow ? 'Jutri' : fmtDate(day);
+        const labelClass = isToday ? 'today' : isTomorrow ? 'tomorrow' : '';
+        const sub        = (isToday || isTomorrow) ? fmtDate(day) : '';
+        dayHdr.innerHTML = `<span class="day-label ${labelClass}">${label}</span>${sub ? `<span class="day-date">${sub}</span>` : ''}`;
+        dayBlock.appendChild(dayHdr);
 
-        const meta = [fmtTime(time) ? `🕐 ${fmtTime(time)}` : null, loc ? `📍 ${loc}` : null].filter(Boolean);
-        if (meta.length) hdr.innerHTML += `<div class="event-meta">${meta.join('  ·  ')}</div>`;
-        sec.appendChild(hdr);
+        // events sorted by time
+        Object.entries(byDay[day])
+          .sort(([, a], [, b]) => (a.time ? new Date(a.time).getTime() : 0) - (b.time ? new Date(b.time).getTime() : 0))
+          .forEach(([title, { rows, time, loc }]) => {
+            const sec = document.createElement('div');
+            sec.className = 'event-section';
 
-        rows.forEach(({ item, status }) => sec.appendChild(makeItemEl(item, status)));
-        makeAddRow(sec, title);
-        container.appendChild(sec);
+            const evHdr = document.createElement('div');
+            evHdr.className = 'event-header';
+            evHdr.innerHTML = `<div class="event-title">${title}</div>`;
+
+            const meta = [fmtTime(time) ? `🕐 ${fmtTime(time)}` : null, loc ? `📍 ${loc}` : null].filter(Boolean);
+            if (meta.length) evHdr.innerHTML += `<div class="event-meta">${meta.join('  ·  ')}</div>`;
+            sec.appendChild(evHdr);
+
+            rows.forEach(({ item, status }) => sec.appendChild(makeItemEl(item, status)));
+            makeAddRow(sec, title);
+            dayBlock.appendChild(sec);
+          });
+
+        container.appendChild(dayBlock);
       });
     }
 
