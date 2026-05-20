@@ -99,7 +99,8 @@
     async function loadState() {
       const res = await fetch(`${N8N_STATE}?msg_id=${encodeURIComponent(msgId)}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json();
+      const result = await res.json();
+      return Array.isArray(result) ? result : (result.data || []);
     }
 
     async function doToggle(item, newStatus) {
