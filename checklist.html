@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Checklista</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--tg-theme-bg-color, #1c1c1e);
+      color: var(--tg-theme-text-color, #ffffff);
+      padding: 16px 16px 32px;
+      min-height: 100vh;
+    }
+    h2 {
+      font-size: 15px;
+      font-weight: 500;
+      opacity: 0.5;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      background: var(--tg-theme-secondary-bg-color, #2c2c2e);
+      border-radius: 13px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity 0.2s;
+      user-select: none;
+    }
+    .item.done { opacity: 0.45; }
+    .circle {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 2px solid var(--tg-theme-hint-color, #636366);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .item.done .circle {
+      background: var(--tg-theme-button-color, #2ea6ff);
+      border-color: var(--tg-theme-button-color, #2ea6ff);
+    }
+    .circle svg { display: none; }
+    .item.done .circle svg { display: block; }
+    .label {
+      font-size: 17px;
+      font-weight: 400;
+      flex: 1;
+    }
+    #loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 50vh;
+      opacity: 0.4;
+      font-size: 15px;
+    }
+    #error {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+      color: #ff453a;
+      font-size: 15px;
+    }
+    #content { display: none; }
+  </style>
+</head>
+<body>
+  <div id="loading">Nalagam...</div>
+  <div id="error">Napaka pri nalaganju. Zapri in poskusi znova.</div>
+  <div id="content">
+    <h2 id="event-title"></h2>
+    <div id="items"></div>
+  </div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    // ── NASTAVI TA DVA URL-ja ──────────────────────────────────────────
+    const N8N_STATE  = 'https://axonproject.app.n8n.cloud/webhook/checklist-state';
+    const N8N_TOGGLE = 'https://axonproject.app.n8n.cloud/webhook/checklist-toggle';
+    // ──────────────────────────────────────────────────────────────────
+
+    const params = new URLSearchParams(location.search);
+    const msgId = params.get('msg_id');
+
+    async function loadState() {
+      const res = await fetch(`${N8N_STATE}?msg_id=${encodeURIComponent(msgId)}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    }
+
+    async function doToggle(item, newStatus) {
+      await fetch(`${N8N_TOGGLE}?msg_id=${encodeURIComponent(msgId)}&item=${encodeURIComponent(item)}&status=${newStatus}`);
+    }
+
+    function render(items) {
+      if (items.length === 0) {
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('error').textContent = 'Ni checklistov za ta dogodek.';
+        return;
+      }
+      document.getElementById('event-title').textContent = items[0].event_title || '';
+      const container = document.getElementById('items');
+
+      items.forEach(({ item, status }) => {
+        const el = document.createElement('div');
+        el.className = `item ${status === 'done' ? 'done' : ''}`;
+        el.innerHTML = `
+          <div class="circle">
+            <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+              <path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="label">${item}</span>
+        `;
+
+        let busy = false;
+        el.addEventListener('click', async () => {
+          if (busy) return;
+          busy = true;
+          const wasDone = el.classList.contains('done');
+          const newStatus = wasDone ? 'pending' : 'done';
+          el.classList.toggle('done');
+          try {
+            await doToggle(item, newStatus);
+          } catch {
+            el.classList.toggle('done'); // rollback
+          }
+          busy = false;
+        });
+
+        container.appendChild(el);
+      });
+    }
+
+    (async () => {
+      try {
+        if (!msgId) throw new Error('no msg_id');
+        const items = await loadState();
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        render(items);
+      } catch (e) {
+        console.error(e);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').style.display = 'block';
+      }
+    })();
+  </script>
+</body>
+</html>
