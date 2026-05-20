@@ -14,13 +14,15 @@
       padding: 16px 16px 32px;
       min-height: 100vh;
     }
-    h2 {
-      font-size: 15px;
-      font-weight: 500;
-      opacity: 0.5;
-      margin-bottom: 14px;
+    .event-section { margin-bottom: 24px; }
+    .event-header {
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0.45;
+      margin-bottom: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
+      padding: 0 4px;
     }
     .item {
       display: flex;
@@ -77,7 +79,6 @@
   <div id="loading">Nalagam...</div>
   <div id="error">Napaka pri nalaganju. Zapri in poskusi znova.</div>
   <div id="content">
-    <h2 id="event-title"></h2>
     <div id="items"></div>
   </div>
 
@@ -107,43 +108,61 @@
       await fetch(`${N8N_TOGGLE}?msg_id=${encodeURIComponent(msgId)}&item=${encodeURIComponent(item)}&status=${newStatus}`);
     }
 
+    function makeItemEl(item, status) {
+      const el = document.createElement('div');
+      el.className = `item ${status === 'done' ? 'done' : ''}`;
+      el.innerHTML = `
+        <div class="circle">
+          <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+            <path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="label">${item}</span>
+      `;
+      let busy = false;
+      el.addEventListener('click', async () => {
+        if (busy) return;
+        busy = true;
+        const wasDone = el.classList.contains('done');
+        const newStatus = wasDone ? 'pending' : 'done';
+        el.classList.toggle('done');
+        try { await doToggle(item, newStatus); }
+        catch { el.classList.toggle('done'); }
+        busy = false;
+      });
+      return el;
+    }
+
     function render(items) {
       if (items.length === 0) {
         document.getElementById('error').style.display = 'block';
         document.getElementById('error').textContent = 'Ni checklistov za ta dogodek.';
         return;
       }
-      document.getElementById('event-title').textContent = items[0].event_title || '';
       const container = document.getElementById('items');
 
-      items.forEach(({ item, status }) => {
-        const el = document.createElement('div');
-        el.className = `item ${status === 'done' ? 'done' : ''}`;
-        el.innerHTML = `
-          <div class="circle">
-            <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
-              <path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <span class="label">${item}</span>
-        `;
+      // Grupiraj po event_title
+      const groups = {};
+      items.forEach(row => {
+        const key = row.event_title || '—';
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(row);
+      });
 
-        let busy = false;
-        el.addEventListener('click', async () => {
-          if (busy) return;
-          busy = true;
-          const wasDone = el.classList.contains('done');
-          const newStatus = wasDone ? 'pending' : 'done';
-          el.classList.toggle('done');
-          try {
-            await doToggle(item, newStatus);
-          } catch {
-            el.classList.toggle('done'); // rollback
-          }
-          busy = false;
+      Object.entries(groups).forEach(([title, rows]) => {
+        const section = document.createElement('div');
+        section.className = 'event-section';
+
+        const header = document.createElement('div');
+        header.className = 'event-header';
+        header.textContent = title;
+        section.appendChild(header);
+
+        rows.forEach(({ item, status }) => {
+          section.appendChild(makeItemEl(item, status));
         });
 
-        container.appendChild(el);
+        container.appendChild(section);
       });
     }
 
