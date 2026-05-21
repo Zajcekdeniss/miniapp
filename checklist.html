@@ -380,8 +380,12 @@
     async function loadState() {
       const res = await fetch(`${N8N_STATE}?msg_id=${encodeURIComponent(msgId)}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const r = await res.json();
-      return Array.isArray(r) ? r : (r.data || []);
+      const text = await res.text();
+      if (!text || !text.trim()) return [];
+      try {
+        const r = JSON.parse(text);
+        return Array.isArray(r) ? r : (r.data || []);
+      } catch { return []; }
     }
 
     async function doToggle(item, status) {
