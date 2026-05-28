@@ -23,317 +23,77 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
-
-    /* ── TABS ── */
-    .tabs {
-      display: flex;
-      background: var(--bg2);
-      padding: 4px;
-      margin: 12px 16px;
-      border-radius: 10px;
-      gap: 2px;
-    }
-    .tab {
-      flex: 1;
-      padding: 8px;
-      text-align: center;
-      font-size: 14px;
-      font-weight: 500;
-      border-radius: 8px;
-      cursor: pointer;
-      color: var(--hint);
-      transition: background 0.2s, color 0.2s;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-    .tab.active {
-      background: var(--bg);
-      color: var(--text);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
-    }
-
-    /* ── PAGES ── */
+    .tabs { display: flex; background: var(--bg2); padding: 4px; margin: 12px 16px; border-radius: 10px; gap: 2px; }
+    .tab { flex: 1; padding: 8px; text-align: center; font-size: 14px; font-weight: 500; border-radius: 8px; cursor: pointer; color: var(--hint); transition: background 0.2s, color 0.2s; -webkit-tap-highlight-color: transparent; user-select: none; }
+    .tab.active { background: var(--bg); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.25); }
     .page { display: none; padding: 0 16px 80px; }
     .page.active { display: block; }
-
-    /* ── CHECKLIST ── */
     .day-block { margin-bottom: 8px; }
-    .day-header {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      padding: 22px 4px 10px;
-    }
+    .day-header { display: flex; align-items: baseline; gap: 10px; padding: 22px 4px 10px; }
     .day-block:first-child .day-header { padding-top: 8px; }
-    .day-label {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text);
-    }
+    .day-label { font-size: 22px; font-weight: 700; color: var(--text); }
     .day-label.today { color: var(--accent); }
     .day-label.tomorrow { color: var(--text); }
-    .day-date {
-      font-size: 13px;
-      color: var(--hint);
-      text-transform: capitalize;
-    }
-
+    .day-date { font-size: 13px; color: var(--hint); text-transform: capitalize; }
     .event-section { margin-bottom: 20px; }
     .event-header { margin-bottom: 10px; padding: 0 4px; }
-    .event-title {
-      font-size: 13px;
-      font-weight: 600;
-      opacity: 0.45;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .event-meta {
-      font-size: 13px;
-      color: var(--hint);
-      margin-top: 5px;
-      font-weight: 500;
-    }
-
-    .item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
-      margin-bottom: 8px;
-      background: var(--bg2);
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: opacity 0.2s;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
+    .event-title { font-size: 13px; font-weight: 600; opacity: 0.45; text-transform: uppercase; letter-spacing: 0.06em; }
+    .event-meta { font-size: 13px; color: var(--hint); margin-top: 5px; font-weight: 500; }
+    .item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; margin-bottom: 8px; background: var(--bg2); border-radius: var(--radius); cursor: pointer; transition: opacity 0.2s; user-select: none; -webkit-tap-highlight-color: transparent; }
     .item.done { opacity: 0.42; }
-    .circle {
-      width: 26px; height: 26px;
-      border-radius: 50%;
-      border: 2px solid var(--hint);
-      flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s, border-color 0.15s;
-    }
+    .circle { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--hint); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; }
     .item.done .circle { background: var(--accent); border-color: var(--accent); }
     .circle svg { display: none; }
     .item.done .circle svg { display: block; }
     .label { font-size: 17px; font-weight: 400; flex: 1; }
-
-    /* ── ADD CUSTOM ITEM ── */
-    .add-item-btn {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 11px 16px;
-      margin-bottom: 8px;
-      background: transparent;
-      border: 1.5px dashed rgba(255,255,255,0.1);
-      border-radius: var(--radius);
-      cursor: pointer;
-      color: var(--accent);
-      font-size: 15px;
-      width: 100%;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .add-item-row {
-      display: none;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
+    .add-item-btn { display: flex; align-items: center; gap: 10px; padding: 11px 16px; margin-bottom: 8px; background: transparent; border: 1.5px dashed rgba(255,255,255,0.1); border-radius: var(--radius); cursor: pointer; color: var(--accent); font-size: 15px; width: 100%; -webkit-tap-highlight-color: transparent; }
+    .add-item-row { display: none; gap: 8px; margin-bottom: 8px; }
     .add-item-row.visible { display: flex; }
-    .add-item-input {
-      flex: 1;
-      padding: 12px 14px;
-      background: var(--bg2);
-      border: none;
-      border-radius: var(--radius);
-      color: var(--text);
-      font-size: 15px;
-      outline: none;
-    }
+    .add-item-input { flex: 1; padding: 12px 14px; background: var(--bg2); border: none; border-radius: var(--radius); color: var(--text); font-size: 15px; outline: none; }
     .add-item-input::placeholder { color: var(--hint); }
-    .btn-sm {
-      padding: 12px 15px;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      -webkit-tap-highlight-color: transparent;
-    }
+    .btn-sm { padding: 12px 15px; background: var(--accent); color: white; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
     .btn-sm.cancel { background: var(--bg2); color: var(--hint); }
-
-    /* ── SETTINGS ── */
     .settings-section { margin-bottom: 32px; }
-    .section-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--hint);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 8px;
-      padding: 0 4px;
-    }
+    .section-title { font-size: 13px; font-weight: 600; color: var(--hint); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; padding: 0 4px; }
     .settings-list { border-radius: var(--radius); overflow: hidden; }
-    .settings-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 13px 16px;
-      background: var(--bg2);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
+    .settings-row { display: flex; align-items: center; gap: 10px; padding: 13px 16px; background: var(--bg2); border-bottom: 1px solid rgba(255,255,255,0.05); }
     .settings-row:last-child { border-bottom: none; }
     .row-content { flex: 1; min-width: 0; }
     .row-title { font-size: 16px; }
     .row-sub { font-size: 12px; color: var(--hint); margin-top: 2px; }
-    .icon-btn {
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      border: none;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
-      flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
+    .icon-btn { width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; -webkit-tap-highlight-color: transparent; }
     .icon-btn.edit { background: rgba(46,166,255,0.15); color: var(--accent); }
-    .icon-btn.del  { background: rgba(255,69,58,0.15);  color: var(--danger); }
-    .add-row-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 13px;
-      background: var(--bg2);
-      border-radius: var(--radius);
-      color: var(--accent);
-      font-size: 15px;
-      font-weight: 500;
-      border: none;
-      width: 100%;
-      margin-top: 8px;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* ── BOTTOM SHEET ── */
-    .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      z-index: 100;
-      backdrop-filter: blur(3px);
-      align-items: flex-end;
-    }
+    .icon-btn.del  { background: rgba(255,69,58,0.15); color: var(--danger); }
+    .add-row-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; background: var(--bg2); border-radius: var(--radius); color: var(--accent); font-size: 15px; font-weight: 500; border: none; width: 100%; margin-top: 8px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 100; backdrop-filter: blur(3px); align-items: flex-end; }
     .overlay.open { display: flex; }
-    .sheet {
-      width: 100%;
-      background: var(--bg2);
-      border-radius: 20px 20px 0 0;
-      padding: 12px 20px 44px;
-      transform: translateY(100%);
-      transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
-    }
+    .sheet { width: 100%; background: var(--bg2); border-radius: 20px 20px 0 0; padding: 12px 20px 44px; transform: translateY(100%); transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1); }
     .overlay.open .sheet { transform: translateY(0); }
-    .sheet-handle {
-      width: 36px; height: 4px;
-      background: rgba(255,255,255,0.18);
-      border-radius: 2px;
-      margin: 0 auto 18px;
-    }
+    .sheet-handle { width: 36px; height: 4px; background: rgba(255,255,255,0.18); border-radius: 2px; margin: 0 auto 18px; }
     .sheet-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
     .field-group { margin-bottom: 13px; }
-    .field-label {
-      font-size: 12px;
-      color: var(--hint);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 6px;
-      padding: 0 2px;
-    }
-    .field-input {
-      width: 100%;
-      padding: 13px 14px;
-      background: var(--bg);
-      border: none;
-      border-radius: var(--radius);
-      color: var(--text);
-      font-size: 16px;
-      outline: none;
-    }
+    .field-label { font-size: 12px; color: var(--hint); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; padding: 0 2px; }
+    .field-input { width: 100%; padding: 13px 14px; background: var(--bg); border: none; border-radius: var(--radius); color: var(--text); font-size: 16px; outline: none; }
     .field-input::placeholder { color: var(--hint); }
     .sheet-actions { display: flex; gap: 10px; margin-top: 20px; }
-    .btn-primary {
-      flex: 1;
-      padding: 14px;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn-cancel {
-      padding: 14px 18px;
-      background: rgba(255,255,255,0.08);
-      color: var(--text);
-      border: none;
-      border-radius: var(--radius);
-      font-size: 16px;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* ── STATES ── */
-    #loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 50vh;
-      opacity: 0.4;
-      font-size: 15px;
-    }
-    #error {
-      display: none;
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--danger);
-      font-size: 15px;
-    }
-    .s-loading {
-      text-align: center;
-      padding: 40px;
-      color: var(--hint);
-      font-size: 14px;
-    }
+    .btn-primary { flex: 1; padding: 14px; background: var(--accent); color: white; border: none; border-radius: var(--radius); font-size: 16px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .btn-cancel { padding: 14px 18px; background: rgba(255,255,255,0.08); color: var(--text); border: none; border-radius: var(--radius); font-size: 16px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    #loading { display: flex; align-items: center; justify-content: center; height: 50vh; opacity: 0.4; font-size: 15px; }
+    #error { display: none; text-align: center; padding: 40px 20px; color: var(--danger); font-size: 15px; }
+    .s-loading { text-align: center; padding: 40px; color: var(--hint); font-size: 14px; }
   </style>
 </head>
 <body>
   <div id="loading">Nalagam...</div>
   <div id="error"></div>
-
   <div id="app" style="display:none">
     <div class="tabs">
-      <div class="tab active" data-tab="checklist">✓ Checklista</div>
+      <div class="tab active" data-tab="checklist">📅 Koledar</div>
       <div class="tab" data-tab="settings">⚙ Nastavitve</div>
     </div>
-    <div class="page active" id="page-checklist">
-      <div id="items"></div>
-    </div>
-    <div class="page" id="page-settings">
-      <div id="settings-content"><div class="s-loading">Nalagam...</div></div>
-    </div>
+    <div class="page active" id="page-checklist"><div id="items"></div></div>
+    <div class="page" id="page-settings"><div id="settings-content"><div class="s-loading">Nalagam...</div></div></div>
   </div>
-
   <div class="overlay" id="overlay">
     <div class="sheet" id="sheet">
       <div class="sheet-handle"></div>
@@ -345,18 +105,17 @@
       </div>
     </div>
   </div>
-
   <script>
-    const BASE = `https://vowed-reveler-query.ngrok-free.dev/webhook`;
-    const N8N_STATE   = `${BASE}/checklist-state`;
-    const N8N_TOGGLE  = `${BASE}/checklist-toggle`;
-    const N8N_CUSTOM  = `${BASE}/checklist-add-custom`;
-    const N8N_SGET    = `${BASE}/settings-get`;
-    const N8N_SADD    = `${BASE}/settings-add`;
-    const N8N_SDEL    = `${BASE}/settings-delete`;
+    const BASE     = `https://vowed-reveler-query.ngrok-free.dev/webhook`;
+    const N8N_STATE  = `${BASE}/checklist-state`;
+    const N8N_TOGGLE = `${BASE}/checklist-toggle`;
+    const N8N_CUSTOM = `${BASE}/checklist-add-custom`;
+    const N8N_SGET   = `${BASE}/settings-get`;
+    const N8N_SADD   = `${BASE}/settings-add`;
+    const N8N_SDEL   = `${BASE}/settings-delete`;
+
     const _f = window.fetch.bind(window);
-window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-browser-warning': 'true', ...(opts.headers || {}) } });
-    
+    window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-browser-warning': 'true', ...(opts.headers || {}) } });
 
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.ready(); tg.expand(); }
@@ -364,7 +123,6 @@ window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-bro
     const params = new URLSearchParams(location.search);
     const msgId  = params.get('msg_id');
 
-    // ── TABS ─────────────────────────────────────────────────────────────
     let settingsLoaded = false;
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', () => {
@@ -372,23 +130,17 @@ window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-bro
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         tab.classList.add('active');
         document.getElementById(`page-${tab.dataset.tab}`).classList.add('active');
-        if (tab.dataset.tab === 'settings' && !settingsLoaded) {
-          loadSettings();
-          settingsLoaded = true;
-        }
+        if (tab.dataset.tab === 'settings' && !settingsLoaded) { loadSettings(); settingsLoaded = true; }
       });
     });
 
-    // ── CHECKLIST ────────────────────────────────────────────────────────
     async function loadState() {
       const res = await fetch(`${N8N_STATE}?msg_id=${encodeURIComponent(msgId)}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const text = await res.text();
       if (!text || !text.trim()) return [];
-      try {
-        const r = JSON.parse(text);
-        return Array.isArray(r) ? r : (r.data || []);
-      } catch { return []; }
+      try { const r = JSON.parse(text); return Array.isArray(r) ? r : (r.data || []); }
+      catch { return []; }
     }
 
     async function doToggle(item, status) {
@@ -402,13 +154,7 @@ window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-bro
     function makeItemEl(itemName, status) {
       const el = document.createElement('div');
       el.className = `item ${status === 'done' ? 'done' : ''}`;
-      el.innerHTML = `
-        <div class="circle">
-          <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
-            <path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <span class="label">${itemName}</span>`;
+      el.innerHTML = `<div class="circle"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="label">${itemName}</span>`;
       let busy = false;
       el.addEventListener('click', async () => {
         if (busy) return; busy = true;
@@ -426,61 +172,44 @@ window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-bro
       const btn = document.createElement('button');
       btn.className = 'add-item-btn';
       btn.innerHTML = `<span style="font-size:18px;line-height:1">+</span> Dodaj item`;
-
       const row = document.createElement('div');
       row.className = 'add-item-row';
-      row.innerHTML = `
-        <input class="add-item-input" placeholder="Ime itema...">
-        <button class="btn-sm cancel">✕</button>
-        <button class="btn-sm confirm">Dodaj</button>`;
-
-      const inp  = row.querySelector('input');
+      row.innerHTML = `<input class="add-item-input" placeholder="Ime itema..."><button class="btn-sm cancel">✕</button><button class="btn-sm confirm">Dodaj</button>`;
+      const inp = row.querySelector('input');
       const canc = row.querySelector('.cancel');
       const conf = row.querySelector('.confirm');
-
       btn.onclick = () => { btn.style.display = 'none'; row.classList.add('visible'); inp.focus(); };
       canc.onclick = () => { btn.style.display = ''; row.classList.remove('visible'); inp.value = ''; };
       conf.onclick = async () => {
         const val = inp.value.trim();
         if (!val) return;
         conf.disabled = true;
-        try {
-          await doAddCustom(eventTitle, val);
-          row.before(makeItemEl(val, 'pending'));
-          inp.value = '';
-          btn.style.display = '';
-          row.classList.remove('visible');
-          tg?.HapticFeedback?.impactOccurred('light');
-        } catch { conf.disabled = false; }
+        try { await doAddCustom(eventTitle, val); row.before(makeItemEl(val, 'pending')); inp.value = ''; btn.style.display = ''; row.classList.remove('visible'); tg?.HapticFeedback?.impactOccurred('light'); }
+        catch { conf.disabled = false; }
       };
       inp.addEventListener('keydown', e => { if (e.key === 'Enter') conf.click(); });
-
       section.appendChild(btn);
       section.appendChild(row);
     }
 
     function fmtTime(dt) {
       if (!dt) return null;
-      try { return new Date(dt).toLocaleTimeString('sl-SI', { hour: '2-digit', minute: '2-digit' }); }
-      catch { return null; }
+      try { return new Date(dt).toLocaleTimeString('sl-SI', { hour: '2-digit', minute: '2-digit' }); } catch { return null; }
     }
 
     function fmtDate(dateStr) {
-      try { return new Date(dateStr + 'T00:00:00').toLocaleDateString('sl-SI', { weekday: 'long', day: 'numeric', month: 'long' }); }
-      catch { return dateStr; }
+      try { return new Date(dateStr + 'T00:00:00').toLocaleDateString('sl-SI', { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return dateStr; }
     }
 
     function render(items) {
       if (!items.length) {
-        document.getElementById('error').textContent = 'Ni checklistov za ta dan.';
+        document.getElementById('error').textContent = 'Ni dogodkov za ta dan.';
         document.getElementById('error').style.display = 'block';
         return;
       }
       const container = document.getElementById('items');
       const today    = new Date().toISOString().split('T')[0];
       const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-
-      // group by day → event
       const byDay = {};
       items.forEach(row => {
         const day = row.datum || today;
@@ -489,47 +218,36 @@ window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-bro
         if (!byDay[day][key]) byDay[day][key] = { rows: [], time: row.event_time, loc: row.event_location };
         byDay[day][key].rows.push(row);
       });
-
-      Object.keys(byDay).sort().forEach((day, i) => {
+      Object.keys(byDay).sort().forEach(day => {
         const dayBlock = document.createElement('div');
         dayBlock.className = 'day-block';
-
-        // day header
         const dayHdr = document.createElement('div');
         dayHdr.className = 'day-header';
-        const isToday    = day === today;
-        const isTomorrow = day === tomorrow;
-        const label      = isToday ? 'Danes' : isTomorrow ? 'Jutri' : fmtDate(day);
+        const isToday = day === today, isTomorrow = day === tomorrow;
+        const label = isToday ? 'Danes' : isTomorrow ? 'Jutri' : fmtDate(day);
         const labelClass = isToday ? 'today' : isTomorrow ? 'tomorrow' : '';
-        const sub        = (isToday || isTomorrow) ? fmtDate(day) : '';
+        const sub = (isToday || isTomorrow) ? fmtDate(day) : '';
         dayHdr.innerHTML = `<span class="day-label ${labelClass}">${label}</span>${sub ? `<span class="day-date">${sub}</span>` : ''}`;
         dayBlock.appendChild(dayHdr);
-
-        // events sorted by time
         Object.entries(byDay[day])
-          .sort(([, a], [, b]) => (a.time ? new Date(a.time).getTime() : 0) - (b.time ? new Date(b.time).getTime() : 0))
+          .sort(([,a],[,b]) => (a.time ? new Date(a.time).getTime() : 0) - (b.time ? new Date(b.time).getTime() : 0))
           .forEach(([title, { rows, time, loc }]) => {
             const sec = document.createElement('div');
             sec.className = 'event-section';
-
             const evHdr = document.createElement('div');
             evHdr.className = 'event-header';
             evHdr.innerHTML = `<div class="event-title">${title}</div>`;
-
             const meta = [fmtTime(time) ? `🕐 ${fmtTime(time)}` : null, loc ? `📍 ${loc}` : null].filter(Boolean);
             if (meta.length) evHdr.innerHTML += `<div class="event-meta">${meta.join('  ·  ')}</div>`;
             sec.appendChild(evHdr);
-
-            rows.forEach(({ item, status }) => sec.appendChild(makeItemEl(item, status)));
+            rows.filter(r => r.item !== '_no_items').forEach(({ item, status }) => sec.appendChild(makeItemEl(item, status)));
             makeAddRow(sec, title);
             dayBlock.appendChild(sec);
           });
-
         container.appendChild(dayBlock);
       });
     }
 
-    // ── SETTINGS ─────────────────────────────────────────────────────────
     let sData = { keywords: [], checklists: [] };
 
     async function loadSettings() {
@@ -539,8 +257,7 @@ window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-bro
         sData = Array.isArray(d) ? d[0] : d;
         renderSettings();
       } catch {
-        document.getElementById('settings-content').innerHTML =
-          '<div class="s-loading" style="color:var(--danger)">Napaka pri nalaganju.</div>';
+        document.getElementById('settings-content').innerHTML = '<div class="s-loading" style="color:var(--danger)">Napaka pri nalaganju.</div>';
       }
     }
 
@@ -557,26 +274,14 @@ window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-bro
       const c = document.getElementById('settings-content');
       c.innerHTML = '';
       const gmail = (sData.keywords || []).filter(k => k.tip === 'gmail');
-      const cal   = (sData.keywords || []).filter(k => k.tip === 'calendar');
       const chk   = sData.checklists || [];
-
       c.appendChild(makeSection('Gmail keywords', gmail,
-        r => r.keyword,
-        r => `${r.dni_nazaj} dni nazaj`,
-        () => openSheet('gmail'),
-        r => openSheet('gmail', r)
+        r => r.keyword, r => `${r.dni_nazaj} dni nazaj`,
+        () => openSheet('gmail'), r => openSheet('gmail', r)
       ));
-      c.appendChild(makeSection('Koledar keywords', cal,
-        r => r.keyword,
-        () => null,
-        () => openSheet('calendar'),
-        r => openSheet('calendar', r)
-      ));
-      c.appendChild(makeSection('Checklist items', chk,
-        r => r.item,
-        r => `vrstni red: ${r.order}`,
-        () => openSheet('checklist'),
-        r => openSheet('checklist', r),
+      c.appendChild(makeSection('Checklist paketi', chk,
+        r => r.item, () => null,
+        () => openSheet('checklist'), r => openSheet('checklist', r),
         r => r.keyword
       ));
     }
@@ -585,31 +290,18 @@ window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-bro
       const sec = document.createElement('div');
       sec.className = 'settings-section';
       sec.innerHTML = `<div class="section-title">${title}</div>`;
-
       const makeRowEl = (row) => {
         const el = document.createElement('div');
         el.className = 'settings-row';
         const sub = subFn(row);
-        el.innerHTML = `
-          <div class="row-content">
-            <div class="row-title">${labelFn(row)}</div>
-            ${sub ? `<div class="row-sub">${sub}</div>` : ''}
-          </div>
-          <button class="icon-btn edit" title="Uredi">✎</button>
-          <button class="icon-btn del"  title="Izbriši">✕</button>`;
+        el.innerHTML = `<div class="row-content"><div class="row-title">${labelFn(row)}</div>${sub ? `<div class="row-sub">${sub}</div>` : ''}</div><button class="icon-btn edit" title="Uredi">✎</button><button class="icon-btn del" title="Izbriši">✕</button>`;
         el.querySelector('.edit').onclick = () => onEdit(row);
         el.querySelector('.del').onclick  = () => delRow(row);
         return el;
       };
-
       if (groupByFn) {
-        // Grupiranje po ključu
         const groups = {};
-        rows.forEach(row => {
-          const key = groupByFn(row);
-          if (!groups[key]) groups[key] = [];
-          groups[key].push(row);
-        });
+        rows.forEach(row => { const key = groupByFn(row); if (!groups[key]) groups[key] = []; groups[key].push(row); });
         Object.entries(groups).forEach(([groupTitle, groupRows]) => {
           const groupEl = document.createElement('div');
           groupEl.style.marginBottom = '12px';
@@ -629,7 +321,6 @@ window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-bro
         rows.forEach(row => list.appendChild(makeRowEl(row)));
         sec.appendChild(list);
       }
-
       const addBtn = document.createElement('button');
       addBtn.className = 'add-row-btn';
       addBtn.innerHTML = `<span style="font-size:18px">+</span> Dodaj`;
@@ -640,76 +331,47 @@ window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-bro
 
     async function delRow(row) {
       const sheet = row.tip !== undefined ? 'Keywords' : 'Checklists';
-      const name  = row.keyword || row.item;
+      const name = row.keyword || row.item;
       if (!confirm(`Izbriši "${name}"?`)) return;
       await fetch(`${N8N_SDEL}?sheet=${sheet}&row_number=${row.row_number}`);
       await refreshSettings();
     }
 
-    // ── BOTTOM SHEET ─────────────────────────────────────────────────────
     function openSheet(type, existing = null) {
-      const overlay = document.getElementById('overlay');
       document.getElementById('sheet-title').textContent = existing ? 'Uredi' : 'Dodaj';
       const fields = document.getElementById('sheet-fields');
       fields.innerHTML = '';
-
-      const field = (id, label, placeholder, value = '', type = 'text') => `
-        <div class="field-group">
-          <div class="field-label">${label}</div>
-          <input class="field-input" id="${id}" type="${type}" placeholder="${placeholder}" value="${value}">
-        </div>`;
-
+      const field = (id, label, placeholder, value = '', type = 'text') => `<div class="field-group"><div class="field-label">${label}</div><input class="field-input" id="${id}" type="${type}" placeholder="${placeholder}" value="${value}"></div>`;
       let saveFn;
       if (type === 'gmail') {
-        fields.innerHTML =
-          field('f-kw', 'Ključna beseda', 'npr. fotografiranje', existing?.keyword || '') +
-          field('f-dni', 'Dni nazaj', '7', existing?.dni_nazaj || '', 'number');
+        fields.innerHTML = field('f-kw', 'Ključna beseda', 'npr. fotografiranje', existing?.keyword || '') + field('f-dni', 'Dni nazaj', '7', existing?.dni_nazaj || '', 'number');
         saveFn = async () => {
-          const kw  = document.getElementById('f-kw').value.trim();
+          const kw = document.getElementById('f-kw').value.trim();
           const dni = document.getElementById('f-dni').value.trim();
           if (!kw) return;
           if (existing) await fetch(`${N8N_SDEL}?sheet=Keywords&row_number=${existing.row_number}`);
           await fetch(`${N8N_SADD}?tip=gmail&keyword=${encodeURIComponent(kw)}&dni_nazaj=${dni}`);
           closeSheet(); await refreshSettings();
         };
-      } else if (type === 'calendar') {
-        fields.innerHTML = field('f-kw', 'Ključna beseda', 'npr. masaža', existing?.keyword || '');
-        saveFn = async () => {
-          const kw = document.getElementById('f-kw').value.trim();
-          if (!kw) return;
-          if (existing) await fetch(`${N8N_SDEL}?sheet=Keywords&row_number=${existing.row_number}`);
-          await fetch(`${N8N_SADD}?tip=calendar&keyword=${encodeURIComponent(kw)}`);
-          closeSheet(); await refreshSettings();
-        };
       } else {
-        fields.innerHTML =
-          field('f-kw',  'Kategorija (keyword)', 'npr. masaža',   existing?.keyword || '') +
-          field('f-item','Item',                  'npr. olje',     existing?.item    || '') +
-          field('f-ord', 'Vrstni red',            '1',             existing?.order   || '', 'number');
+        fields.innerHTML = field('f-kw', 'Kategorija (keyword)', 'npr. masaža', existing?.keyword || '') + field('f-item', 'Item', 'npr. olje', existing?.item || '');
         saveFn = async () => {
           const kw  = document.getElementById('f-kw').value.trim();
           const itm = document.getElementById('f-item').value.trim();
-          const ord = document.getElementById('f-ord').value.trim();
           if (!kw || !itm) return;
           if (existing) await fetch(`${N8N_SDEL}?sheet=Checklists&row_number=${existing.row_number}`);
-          await fetch(`${N8N_SADD}?keyword=${encodeURIComponent(kw)}&item=${encodeURIComponent(itm)}&order=${ord}`);
+          await fetch(`${N8N_SADD}?keyword=${encodeURIComponent(kw)}&item=${encodeURIComponent(itm)}`);
           closeSheet(); await refreshSettings();
         };
       }
-
       document.getElementById('sheet-save').onclick = saveFn;
-      overlay.classList.add('open');
+      document.getElementById('overlay').classList.add('open');
       setTimeout(() => fields.querySelector('.field-input')?.focus(), 350);
     }
 
-    function closeSheet() {
-      document.getElementById('overlay').classList.remove('open');
-    }
-    document.getElementById('overlay').addEventListener('click', e => {
-      if (e.target.id === 'overlay') closeSheet();
-    });
+    function closeSheet() { document.getElementById('overlay').classList.remove('open'); }
+    document.getElementById('overlay').addEventListener('click', e => { if (e.target.id === 'overlay') closeSheet(); });
 
-    // ── INIT ─────────────────────────────────────────────────────────────
     (async () => {
       try {
         if (!msgId) throw new Error('no msg_id');
