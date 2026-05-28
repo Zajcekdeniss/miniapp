@@ -621,13 +621,51 @@
           list.className = 'settings-list';
           groupRows.forEach(row => list.appendChild(makeRowEl(row)));
           groupEl.appendChild(list);
-          // + gumb samo za ta keyword — keyword je že vnaprej izpolnjen
+          // inline add — brez bottom sheeta
           const groupAddBtn = document.createElement('button');
           groupAddBtn.className = 'add-row-btn';
           groupAddBtn.style.marginTop = '4px';
           groupAddBtn.innerHTML = `<span style="font-size:16px">+</span> Dodaj item`;
-          groupAddBtn.onclick = () => openSheet('checklist', null, groupTitle);
+
+          const inlineRow = document.createElement('div');
+          inlineRow.className = 'add-item-row';
+          inlineRow.style.marginTop = '4px';
+          inlineRow.innerHTML = `
+            <input class="add-item-input" placeholder="Nov item...">
+            <button class="btn-sm cancel">✕</button>
+            <button class="btn-sm confirm">↵</button>`;
+
+          const inp  = inlineRow.querySelector('input');
+          const canc = inlineRow.querySelector('.cancel');
+          const conf = inlineRow.querySelector('.confirm');
+
+          const saveInline = async () => {
+            const val = inp.value.trim();
+            if (!val) return;
+            conf.disabled = true;
+            await fetch(`${N8N_SADD}?keyword=${encodeURIComponent(groupTitle)}&item=${encodeURIComponent(val)}`);
+            inp.value = '';
+            conf.disabled = false;
+            inlineRow.classList.remove('visible');
+            groupAddBtn.style.display = '';
+            await refreshSettings();
+          };
+
+          groupAddBtn.onclick = () => {
+            groupAddBtn.style.display = 'none';
+            inlineRow.classList.add('visible');
+            inp.focus();
+          };
+          canc.onclick = () => {
+            inlineRow.classList.remove('visible');
+            groupAddBtn.style.display = '';
+            inp.value = '';
+          };
+          conf.onclick = saveInline;
+          inp.addEventListener('keydown', e => { if (e.key === 'Enter') saveInline(); });
+
           groupEl.appendChild(groupAddBtn);
+          groupEl.appendChild(inlineRow);
           sec.appendChild(groupEl);
         });
       } else {
