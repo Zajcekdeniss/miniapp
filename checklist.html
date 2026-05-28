@@ -452,7 +452,7 @@
         conf.disabled = true;
         try {
           await doAddCustom(eventTitle, val);
-          row.before(makeItemEl(val, 'pending'));
+          btn.before(makeItemEl(val, 'pending'));
           inp.value = '';
           btn.style.display = '';
           row.classList.remove('visible');
@@ -484,7 +484,13 @@
       // group by day → event
       const byDay = {};
       items.forEach(row => {
-        const day = row.datum || today;
+        let day = today;
+        if (row.event_time) {
+          try { day = new Date(row.event_time).toISOString().split('T')[0]; }
+          catch { day = row.datum || today; }
+        } else if (row.datum) {
+          day = row.datum;
+        }
         if (!byDay[day]) byDay[day] = {};
         const key = row.event_title || '—';
         if (!byDay[day][key]) byDay[day][key] = { rows: [], time: row.event_time, loc: row.event_location };
