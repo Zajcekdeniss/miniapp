@@ -612,7 +612,7 @@
         });
         Object.entries(groups).forEach(([groupTitle, groupRows]) => {
           const groupEl = document.createElement('div');
-          groupEl.style.marginBottom = '12px';
+          groupEl.style.marginBottom = '16px';
           const groupHeader = document.createElement('div');
           groupHeader.style.cssText = 'font-size:12px;color:var(--hint);padding:0 4px 6px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em';
           groupHeader.textContent = groupTitle;
@@ -621,6 +621,13 @@
           list.className = 'settings-list';
           groupRows.forEach(row => list.appendChild(makeRowEl(row)));
           groupEl.appendChild(list);
+          // + gumb samo za ta keyword — keyword je že vnaprej izpolnjen
+          const groupAddBtn = document.createElement('button');
+          groupAddBtn.className = 'add-row-btn';
+          groupAddBtn.style.marginTop = '4px';
+          groupAddBtn.innerHTML = `<span style="font-size:16px">+</span> Dodaj item`;
+          groupAddBtn.onclick = () => openSheet('checklist', null, groupTitle);
+          groupEl.appendChild(groupAddBtn);
           sec.appendChild(groupEl);
         });
       } else {
@@ -632,7 +639,8 @@
 
       const addBtn = document.createElement('button');
       addBtn.className = 'add-row-btn';
-      addBtn.innerHTML = `<span style="font-size:18px">+</span> Dodaj`;
+      addBtn.style.cssText = 'opacity:0.6;font-size:13px;margin-top:4px';
+      addBtn.innerHTML = `<span style="font-size:15px">+</span> Nov keyword`;
       addBtn.onclick = onAdd;
       sec.appendChild(addBtn);
       return sec;
@@ -647,7 +655,7 @@
     }
 
     // ── BOTTOM SHEET ─────────────────────────────────────────────────────
-    function openSheet(type, existing = null) {
+    function openSheet(type, existing = null, prefillKeyword = null) {
       const overlay = document.getElementById('overlay');
       document.getElementById('sheet-title').textContent = existing ? 'Uredi' : 'Dodaj';
       const fields = document.getElementById('sheet-fields');
@@ -675,7 +683,7 @@
       } else {
         // checklist paket — brez order
         fields.innerHTML =
-          field('f-kw',  'Keyword (kategorija)', 'npr. masaža', existing?.keyword || '') +
+          field('f-kw',  'Keyword (kategorija)', 'npr. masaža', prefillKeyword || existing?.keyword || '') +
           field('f-item','Item',                  'npr. olje',   existing?.item    || '');
         saveFn = async () => {
           const kw  = document.getElementById('f-kw').value.trim();
