@@ -354,6 +354,9 @@
     const N8N_SGET    = `${BASE}/settings-get`;
     const N8N_SADD    = `${BASE}/settings-add`;
     const N8N_SDEL    = `${BASE}/settings-delete`;
+    const _f = window.fetch.bind(window);
+window.fetch = (url, opts = {}) => _f(url, { ...opts, headers: { 'ngrok-skip-browser-warning': 'true', ...(opts.headers || {}) } });
+    
 
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.ready(); tg.expand(); }
