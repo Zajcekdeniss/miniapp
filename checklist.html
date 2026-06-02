@@ -8,13 +8,19 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: var(--tg-theme-bg-color, #1c1c1e);
-      --bg2: var(--tg-theme-secondary-bg-color, #2c2c2e);
-      --text: var(--tg-theme-text-color, #ffffff);
-      --hint: var(--tg-theme-hint-color, #8e8e93);
-      --accent: var(--tg-theme-button-color, #2ea6ff);
-      --danger: #ff453a;
-      --radius: 13px;
+      --bg:      var(--tg-theme-bg-color, #0d0d0f);
+      --bg2:     var(--tg-theme-secondary-bg-color, #1c1c1e);
+      --bg3:     #252528;
+      --text:    var(--tg-theme-text-color, #f5f5f7);
+      --hint:    var(--tg-theme-hint-color, #6e6e73);
+      --accent:  #1a6ed8;
+      --accent2: #0f5bbf;
+      --green:   #30a46c;
+      --danger:  #ff453a;
+      --border:  rgba(255,255,255,0.07);
+      --shadow:  0 4px 16px rgba(0,0,0,0.45);
+      --radius:  16px;
+      --radius-sm: 12px;
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
@@ -29,9 +35,10 @@
       display: flex;
       background: var(--bg2);
       padding: 4px;
-      margin: 12px 16px;
-      border-radius: 10px;
+      margin: 14px 16px 8px;
+      border-radius: 12px;
       gap: 2px;
+      border: 1px solid var(--border);
     }
     .tab {
       flex: 1;
@@ -39,7 +46,7 @@
       text-align: center;
       font-size: 14px;
       font-weight: 500;
-      border-radius: 8px;
+      border-radius: 9px;
       cursor: pointer;
       color: var(--hint);
       transition: background 0.2s, color 0.2s;
@@ -47,150 +54,227 @@
       user-select: none;
     }
     .tab.active {
-      background: var(--bg);
+      background: var(--bg3);
       color: var(--text);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4), inset 0 0 0 1px var(--border);
     }
 
     /* ── PAGES ── */
-    .page { display: none; padding: 0 16px 80px; }
+    .page { display: none; padding: 0 16px 90px; }
     .page.active { display: block; }
 
-    /* ── CHECKLIST ── */
-    .day-block { margin-bottom: 8px; }
+    /* ── DAY HEADER ── */
+    .day-block { margin-bottom: 4px; }
     .day-header {
       display: flex;
       align-items: baseline;
       gap: 10px;
-      padding: 22px 4px 10px;
+      padding: 24px 2px 12px;
     }
-    .day-block:first-child .day-header { padding-top: 8px; }
+    .day-block:first-child .day-header { padding-top: 10px; }
     .day-label {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 700;
+      letter-spacing: -0.3px;
       color: var(--text);
     }
     .day-label.today { color: var(--accent); }
-    .day-label.tomorrow { color: var(--text); }
     .day-date {
       font-size: 13px;
       color: var(--hint);
       text-transform: capitalize;
+      font-weight: 400;
     }
 
-    .event-section { margin-bottom: 20px; }
-    .event-header { margin-bottom: 10px; padding: 0 4px; }
+    /* ── EVENT CARD ── */
+    .event-card {
+      background: var(--bg2);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      margin-bottom: 14px;
+      overflow: hidden;
+      transition: border-color 0.4s;
+    }
+    .event-card[data-progress="done"] {
+      border-color: rgba(48, 164, 108, 0.3);
+    }
+    .event-card[data-progress="partial"] {
+      border-color: rgba(26, 110, 216, 0.3);
+    }
+
+    /* ── EVENT HEADER INSIDE CARD ── */
+    .event-header {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .event-header-left { flex: 1; min-width: 0; }
     .event-title {
-      font-size: 13px;
+      font-size: 16px;
       font-weight: 600;
-      opacity: 0.45;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      color: var(--text);
+      letter-spacing: -0.1px;
     }
     .event-meta {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--hint);
-      margin-top: 5px;
-      font-weight: 500;
+      margin-top: 4px;
+      font-weight: 400;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 11px;
+      color: var(--hint);
     }
 
+    /* ── PROGRESS BADGE ── */
+    .progress-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      flex-shrink: 0;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--hint);
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .progress-badge.partial {
+      background: rgba(26,110,216,0.15);
+      border-color: rgba(26,110,216,0.3);
+      color: var(--accent);
+    }
+    .progress-badge.done {
+      background: rgba(48,164,108,0.15);
+      border-color: rgba(48,164,108,0.3);
+      color: var(--green);
+    }
+
+    /* ── ITEMS ── */
+    .items-body { padding: 8px 12px 10px; }
     .item {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding: 14px 16px;
-      margin-bottom: 8px;
-      background: var(--bg2);
-      border-radius: var(--radius);
+      gap: 13px;
+      padding: 12px;
+      margin-bottom: 5px;
+      background: var(--bg3);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
       cursor: pointer;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, border-color 0.2s;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
-    .item.done { opacity: 0.42; }
+    .item:last-of-type { margin-bottom: 0; }
+    .item.done {
+      opacity: 0.38;
+    }
     .circle {
-      width: 26px; height: 26px;
+      width: 24px; height: 24px;
       border-radius: 50%;
-      border: 2px solid var(--hint);
+      border: 1.5px solid var(--hint);
       flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       transition: background 0.15s, border-color 0.15s;
     }
-    .item.done .circle { background: var(--accent); border-color: var(--accent); }
+    .item.done .circle {
+      background: var(--green);
+      border-color: var(--green);
+    }
     .circle svg { display: none; }
     .item.done .circle svg { display: block; }
-    .label { font-size: 17px; font-weight: 400; flex: 1; }
+    .label { font-size: 15px; font-weight: 400; flex: 1; }
 
     /* ── ADD CUSTOM ITEM ── */
     .add-item-btn {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 11px 16px;
-      margin-bottom: 8px;
+      gap: 8px;
+      padding: 10px 12px;
+      margin: 6px 12px 10px;
       background: transparent;
-      border: 1.5px dashed rgba(255,255,255,0.1);
-      border-radius: var(--radius);
+      border: 1px dashed rgba(255,255,255,0.1);
+      border-radius: var(--radius-sm);
       cursor: pointer;
       color: var(--accent);
-      font-size: 15px;
-      width: 100%;
+      font-size: 14px;
+      width: calc(100% - 24px);
       -webkit-tap-highlight-color: transparent;
     }
     .add-item-row {
       display: none;
-      gap: 8px;
-      margin-bottom: 8px;
+      gap: 7px;
+      margin: 6px 12px 10px;
     }
     .add-item-row.visible { display: flex; }
     .add-item-input {
       flex: 1;
-      padding: 12px 14px;
-      background: var(--bg2);
-      border: none;
-      border-radius: var(--radius);
+      padding: 10px 13px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
       color: var(--text);
-      font-size: 15px;
+      font-size: 14px;
       outline: none;
     }
     .add-item-input::placeholder { color: var(--hint); }
     .btn-sm {
-      padding: 12px 15px;
+      padding: 10px 14px;
       background: var(--accent);
       color: white;
       border: none;
-      border-radius: var(--radius);
-      font-size: 15px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
       -webkit-tap-highlight-color: transparent;
     }
-    .btn-sm.cancel { background: var(--bg2); color: var(--hint); }
+    .btn-sm.cancel { background: var(--bg3); color: var(--hint); border: 1px solid var(--border); }
 
     /* ── SETTINGS ── */
     .settings-section { margin-bottom: 32px; }
     .section-title {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--hint);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.07em;
       margin-bottom: 8px;
       padding: 0 4px;
     }
-    .settings-list { border-radius: var(--radius); overflow: hidden; }
+    .settings-list {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      box-shadow: var(--shadow);
+    }
     .settings-row {
       display: flex;
       align-items: center;
       gap: 10px;
       padding: 13px 16px;
       background: var(--bg2);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid var(--border);
     }
     .settings-row:last-child { border-bottom: none; }
     .row-content { flex: 1; min-width: 0; }
-    .row-title { font-size: 16px; }
+    .row-title { font-size: 15px; }
     .row-sub { font-size: 12px; color: var(--hint); margin-top: 2px; }
     .icon-btn {
       width: 30px; height: 30px;
@@ -202,7 +286,7 @@
       flex-shrink: 0;
       -webkit-tap-highlight-color: transparent;
     }
-    .icon-btn.edit { background: rgba(46,166,255,0.15); color: var(--accent); }
+    .icon-btn.edit { background: rgba(26,110,216,0.15); color: var(--accent); }
     .icon-btn.del  { background: rgba(255,69,58,0.15);  color: var(--danger); }
     .add-row-btn {
       display: flex;
@@ -212,14 +296,15 @@
       padding: 13px;
       background: var(--bg2);
       border-radius: var(--radius);
+      border: 1px solid var(--border);
       color: var(--accent);
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
-      border: none;
       width: 100%;
       margin-top: 8px;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+      box-shadow: var(--shadow);
     }
 
     /* ── BOTTOM SHEET ── */
@@ -227,43 +312,47 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.55);
+      background: rgba(0,0,0,0.6);
       z-index: 100;
-      backdrop-filter: blur(3px);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       align-items: flex-end;
     }
     .overlay.open { display: flex; }
     .sheet {
       width: 100%;
       background: var(--bg2);
-      border-radius: 20px 20px 0 0;
-      padding: 12px 20px 44px;
+      border: 1px solid var(--border);
+      border-radius: 22px 22px 0 0;
+      padding: 12px 20px 50px;
       transform: translateY(100%);
       transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
     }
     .overlay.open .sheet { transform: translateY(0); }
     .sheet-handle {
       width: 36px; height: 4px;
-      background: rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.15);
       border-radius: 2px;
       margin: 0 auto 18px;
     }
     .sheet-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
     .field-group { margin-bottom: 13px; }
     .field-label {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--hint);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       margin-bottom: 6px;
       padding: 0 2px;
+      font-weight: 600;
     }
     .field-input {
       width: 100%;
       padding: 13px 14px;
-      background: var(--bg);
-      border: none;
-      border-radius: var(--radius);
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
       color: var(--text);
       font-size: 16px;
       outline: none;
@@ -276,7 +365,7 @@
       background: var(--accent);
       color: white;
       border: none;
-      border-radius: var(--radius);
+      border-radius: var(--radius-sm);
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
@@ -284,10 +373,10 @@
     }
     .btn-cancel {
       padding: 14px 18px;
-      background: rgba(255,255,255,0.08);
+      background: var(--bg3);
+      border: 1px solid var(--border);
       color: var(--text);
-      border: none;
-      border-radius: var(--radius);
+      border-radius: var(--radius-sm);
       font-size: 16px;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
@@ -299,7 +388,7 @@
       align-items: center;
       justify-content: center;
       height: 50vh;
-      opacity: 0.4;
+      opacity: 0.35;
       font-size: 15px;
     }
     #error {
@@ -347,7 +436,6 @@
   </div>
 
   <script>
-    // ── ngrok override ────────────────────────────────────────────────────
     const _orig = window.fetch.bind(window);
     window.fetch = (url, opts = {}) => {
       if (typeof url === 'string' && url.includes('ngrok')) {
@@ -356,7 +444,7 @@
       return _orig(url, opts);
     };
 
-    const BASE      = 'https://n8ndeniss.duckdns.org/webhook';
+    const BASE       = 'https://n8ndeniss.duckdns.org/webhook';
     const N8N_STATE  = `${BASE}/checklist-state`;
     const N8N_TOGGLE = `${BASE}/checklist-toggle`;
     const N8N_CUSTOM = `${BASE}/checklist-add-custom`;
@@ -405,33 +493,54 @@
       await fetch(`${N8N_CUSTOM}?msg_id=${encodeURIComponent(msgId)}&event_title=${encodeURIComponent(eventTitle)}&item=${encodeURIComponent(itemName)}`);
     }
 
-    function makeItemEl(itemName, status) {
+    function updateCardProgress(card) {
+      const items = card.querySelectorAll('.item');
+      if (!items.length) return;
+      const total = items.length;
+      const done  = [...items].filter(i => i.classList.contains('done')).length;
+      const badge = card.querySelector('.progress-badge');
+      if (!badge) return;
+      badge.textContent = `${done}/${total}`;
+      if (done === total) {
+        badge.className = 'progress-badge done';
+        card.dataset.progress = 'done';
+      } else if (done > 0) {
+        badge.className = 'progress-badge partial';
+        card.dataset.progress = 'partial';
+      } else {
+        badge.className = 'progress-badge';
+        card.dataset.progress = '';
+      }
+    }
+
+    function makeItemEl(itemName, status, card) {
       const el = document.createElement('div');
       el.className = `item ${status === 'done' ? 'done' : ''}`;
       el.innerHTML = `
         <div class="circle">
-          <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
-            <path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+            <path d="M1 4.5L4 7.5L10 1.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <span class="label">${itemName}</span>`;
       let busy = false;
       el.addEventListener('click', async () => {
         if (busy) return; busy = true;
-        const was = el.classList.contains('done');
+        const was  = el.classList.contains('done');
         const next = was ? 'pending' : 'done';
         el.classList.toggle('done');
+        updateCardProgress(card);
         try { await doToggle(itemName, next); tg?.HapticFeedback?.impactOccurred('light'); }
-        catch { el.classList.toggle('done'); }
+        catch { el.classList.toggle('done'); updateCardProgress(card); }
         busy = false;
       });
       return el;
     }
 
-    function makeAddRow(section, eventTitle) {
+    function makeAddRow(body, eventTitle, card) {
       const btn = document.createElement('button');
       btn.className = 'add-item-btn';
-      btn.innerHTML = `<span style="font-size:18px;line-height:1">+</span> Dodaj item`;
+      btn.innerHTML = `<span style="font-size:16px;line-height:1">+</span> Dodaj item`;
 
       const row = document.createElement('div');
       row.className = 'add-item-row';
@@ -452,7 +561,8 @@
         conf.disabled = true;
         try {
           await doAddCustom(eventTitle, val);
-          btn.before(makeItemEl(val, 'pending'));
+          body.insertBefore(makeItemEl(val, 'pending', card), btn);
+          updateCardProgress(card);
           inp.value = '';
           btn.style.display = '';
           row.classList.remove('visible');
@@ -461,8 +571,8 @@
       };
       inp.addEventListener('keydown', e => { if (e.key === 'Enter') conf.click(); });
 
-      section.appendChild(btn);
-      section.appendChild(row);
+      body.appendChild(btn);
+      body.appendChild(row);
     }
 
     function fmtTime(dt) {
@@ -481,16 +591,13 @@
       const today    = new Date().toISOString().split('T')[0];
       const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
 
-      // group by day → event
       const byDay = {};
       items.forEach(row => {
         let day = today;
         if (row.event_time) {
           try { day = new Date(row.event_time).toISOString().split('T')[0]; }
           catch { day = row.datum || today; }
-        } else if (row.datum) {
-          day = row.datum;
-        }
+        } else if (row.datum) { day = row.datum; }
         if (!byDay[day]) byDay[day] = {};
         const key = row.event_title || '—';
         if (!byDay[day][key]) byDay[day][key] = { rows: [], time: row.event_time, loc: row.event_location };
@@ -511,7 +618,7 @@
         const isToday    = day === today;
         const isTomorrow = day === tomorrow;
         const label      = isToday ? 'Danes' : isTomorrow ? 'Jutri' : fmtDate(day);
-        const labelClass = isToday ? 'today' : isTomorrow ? 'tomorrow' : '';
+        const labelClass = isToday ? 'today' : '';
         const sub        = (isToday || isTomorrow) ? fmtDate(day) : '';
         dayHdr.innerHTML = `<span class="day-label ${labelClass}">${label}</span>${sub ? `<span class="day-date">${sub}</span>` : ''}`;
         dayBlock.appendChild(dayHdr);
@@ -519,23 +626,46 @@
         Object.entries(byDay[day])
           .sort(([, a], [, b]) => (a.time ? new Date(a.time).getTime() : 0) - (b.time ? new Date(b.time).getTime() : 0))
           .forEach(([title, { rows, time, loc }]) => {
-            const sec = document.createElement('div');
-            sec.className = 'event-section';
 
+            // card wrapper
+            const card = document.createElement('div');
+            card.className = 'event-card';
+
+            // event header
             const evHdr = document.createElement('div');
             evHdr.className = 'event-header';
-            evHdr.innerHTML = `<div class="event-title">${title}</div>`;
-            const meta = [fmtTime(time) ? `🕐 ${fmtTime(time)}` : null, loc ? `📍 ${loc}` : null].filter(Boolean);
-            if (meta.length) evHdr.innerHTML += `<div class="event-meta">${meta.join('  ·  ')}</div>`;
-            sec.appendChild(evHdr);
 
-            // filtriraj _no_items — dogodki brez checklistov dobijo samo + gumb
+            const left = document.createElement('div');
+            left.className = 'event-header-left';
+            left.innerHTML = `<div class="event-title">${title}</div>`;
+
+            const meta = [];
+            const t = fmtTime(time);
+            if (t) meta.push(`<span class="meta-pill">🕐 ${t}</span>`);
+            if (loc) meta.push(`<span class="meta-pill">📍 ${loc}</span>`);
+            if (meta.length) left.innerHTML += `<div class="event-meta">${meta.join('')}</div>`;
+
+            const badge = document.createElement('div');
+            badge.className = 'progress-badge';
+            badge.textContent = '0/0';
+
+            evHdr.appendChild(left);
+            evHdr.appendChild(badge);
+            card.appendChild(evHdr);
+
+            // items body
+            const body = document.createElement('div');
+            body.className = 'items-body';
+
             rows
               .filter(({ item }) => item !== '_no_items')
-              .forEach(({ item, status }) => sec.appendChild(makeItemEl(item, status)));
+              .forEach(({ item, status }) => body.appendChild(makeItemEl(item, status, card)));
 
-            makeAddRow(sec, title);
-            dayBlock.appendChild(sec);
+            card.appendChild(body);
+            makeAddRow(body, title, card);
+            updateCardProgress(card);
+
+            dayBlock.appendChild(card);
           });
 
         container.appendChild(dayBlock);
@@ -627,7 +757,7 @@
           list.className = 'settings-list';
           groupRows.forEach(row => list.appendChild(makeRowEl(row)));
           groupEl.appendChild(list);
-          // inline add — brez bottom sheeta
+
           const groupAddBtn = document.createElement('button');
           groupAddBtn.className = 'add-row-btn';
           groupAddBtn.style.marginTop = '4px';
@@ -683,7 +813,7 @@
 
       const addBtn = document.createElement('button');
       addBtn.className = 'add-row-btn';
-      addBtn.style.cssText = 'opacity:0.6;font-size:13px;margin-top:4px';
+      addBtn.style.cssText = 'opacity:0.55;font-size:13px;margin-top:4px';
       addBtn.innerHTML = `<span style="font-size:15px">+</span> Nov keyword`;
       addBtn.onclick = onAdd;
       sec.appendChild(addBtn);
@@ -725,7 +855,6 @@
           closeSheet(); await refreshSettings();
         };
       } else {
-        // checklist paket — brez order
         fields.innerHTML =
           field('f-kw',  'Keyword (kategorija)', 'npr. masaža', prefillKeyword || existing?.keyword || '') +
           field('f-item','Item',                  'npr. olje',   existing?.item    || '');
