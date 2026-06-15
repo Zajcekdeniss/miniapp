@@ -815,7 +815,7 @@
             groupAddBtn.style.display = '';
             renderSettings();
             conf.disabled = false;
-            refreshSettings();
+            silentRefresh();
           };
 
           groupAddBtn.onclick = () => {
@@ -929,7 +929,6 @@
           btn.disabled = false;
           btn.innerHTML = 'Shrani';
           silentRefresh();
-          btn.innerHTML = 'Shrani';
         };
       }
 
