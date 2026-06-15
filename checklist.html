@@ -511,8 +511,8 @@
       await fetch(`${N8N_TOGGLE}?msg_id=${encodeURIComponent(msgId)}&item=${encodeURIComponent(item)}&status=${status}`);
     }
 
-    async function doAddCustom(eventTitle, itemName) {
-      await fetch(`${N8N_CUSTOM}?msg_id=${encodeURIComponent(msgId)}&event_title=${encodeURIComponent(eventTitle)}&item=${encodeURIComponent(itemName)}`);
+    async function doAddCustom(eventTitle, eventTime, itemName) {
+      await fetch(`${N8N_CUSTOM}?msg_id=${encodeURIComponent(msgId)}&event_title=${encodeURIComponent(eventTitle)}&event_time=${encodeURIComponent(eventTime || '')}&item=${encodeURIComponent(itemName)}`);
     }
 
     function updateCardProgress(card) {
@@ -559,7 +559,7 @@
       return el;
     }
 
-    function makeAddRow(body, eventTitle, card) {
+    function makeAddRow(body, eventTitle, eventTime, card) {
       const btn = document.createElement('button');
       btn.className = 'add-item-btn';
       btn.innerHTML = `<span style="font-size:16px;line-height:1">+</span> Dodaj item`;
@@ -582,7 +582,7 @@
         if (!val) return;
         conf.disabled = true;
         try {
-          await doAddCustom(eventTitle, val);
+          await doAddCustom(eventTitle, eventTime, val);
           body.insertBefore(makeItemEl(val, 'pending', card), btn);
           updateCardProgress(card);
           inp.value = '';
@@ -685,7 +685,7 @@
               .forEach(({ item, status }) => body.appendChild(makeItemEl(item, status, card)));
 
             card.appendChild(body);
-            makeAddRow(body, title, card);
+            makeAddRow(body, title, time, card);
             updateCardProgress(card);
 
             dayBlock.appendChild(card);
