@@ -877,9 +877,16 @@
           await new Promise(r => setTimeout(r, 50));
           if (existing) await fetch(`${N8N_SDEL}?sheet=Keywords&row_number=${existing.row_number}`);
           await fetch(`${N8N_SADD}?tip=gmail&keyword=${encodeURIComponent(kw)}&dni_nazaj=${dni}`);
-          closeSheet(); await refreshSettings();
+          if (existing) {
+            const idx = sData.keywords.findIndex(k => k.row_number === existing.row_number);
+            if (idx !== -1) sData.keywords[idx] = { ...sData.keywords[idx], keyword: kw, dni_nazaj: parseInt(dni) };
+          } else {
+            sData.keywords.push({ tip: 'gmail', keyword: kw, dni_nazaj: parseInt(dni), row_number: 9999 });
+          }
+          closeSheet(); renderSettings();
           btn.disabled = false;
           btn.innerHTML = 'Shrani';
+          refreshSettings();
         };
       } else {
         fields.innerHTML =
@@ -896,8 +903,16 @@
           await new Promise(r => setTimeout(r, 50));
           if (existing) await fetch(`${N8N_SDEL}?sheet=Checklists&row_number=${existing.row_number}`);
           await fetch(`${N8N_SADD}?keyword=${encodeURIComponent(kw)}&item=${encodeURIComponent(itm)}`);
-          closeSheet(); await refreshSettings();
+          if (existing) {
+            const idx = sData.checklists.findIndex(c => c.row_number === existing.row_number);
+            if (idx !== -1) sData.checklists[idx] = { ...sData.checklists[idx], keyword: kw, item: itm };
+          } else {
+            sData.checklists.push({ keyword: kw, item: itm, row_number: 9999 });
+          }
+          closeSheet(); renderSettings();
           btn.disabled = false;
+          btn.innerHTML = 'Shrani';
+          refreshSettings();
           btn.innerHTML = 'Shrani';
         };
       }
