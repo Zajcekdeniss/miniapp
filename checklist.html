@@ -853,7 +853,6 @@
     async function delRow(row) {
       const sheet = row.tip !== undefined ? 'Keywords' : 'Checklists';
       const name  = row.keyword || row.item;
-      if (!confirm(`Izbriši "${name}"?`)) return;
       fetch(`${N8N_SDEL}?sheet=${sheet}&row_number=${row.row_number}`);
       if (sheet === 'Keywords') {
         sData.keywords = sData.keywords.filter(k => k.row_number !== row.row_number);
