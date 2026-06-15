@@ -710,12 +710,10 @@
     }
 
     async function refreshSettings() {
-      settingsLoaded = false;
       const res = await fetch(N8N_SGET);
       const d = await res.json();
       sData = Array.isArray(d) ? d[0] : d;
       renderSettings();
-      settingsLoaded = true;
     }
 
     function renderSettings() {
@@ -876,7 +874,7 @@
           if (btn.disabled) return;
           btn.disabled = true;
           btn.innerHTML = '<div class="spinner"></div> Shranjujem...';
-          await new Promise(r => requestAnimationFrame(r));
+          await new Promise(r => setTimeout(r, 50));
           if (existing) await fetch(`${N8N_SDEL}?sheet=Keywords&row_number=${existing.row_number}`);
           await fetch(`${N8N_SADD}?tip=gmail&keyword=${encodeURIComponent(kw)}&dni_nazaj=${dni}`);
           closeSheet(); await refreshSettings();
@@ -895,7 +893,7 @@
           if (btn.disabled) return;
           btn.disabled = true;
           btn.innerHTML = '<div class="spinner"></div> Shranjujem...';
-          await new Promise(r => requestAnimationFrame(r));
+          await new Promise(r => setTimeout(r, 50));
           if (existing) await fetch(`${N8N_SDEL}?sheet=Checklists&row_number=${existing.row_number}`);
           await fetch(`${N8N_SADD}?keyword=${encodeURIComponent(kw)}&item=${encodeURIComponent(itm)}`);
           closeSheet(); await refreshSettings();
