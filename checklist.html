@@ -799,12 +799,14 @@
             const val = inp.value.trim();
             if (!val) return;
             conf.disabled = true;
-            await fetch(`${N8N_SADD}?keyword=${encodeURIComponent(groupTitle)}&item=${encodeURIComponent(val)}`);
+            fetch(`${N8N_SADD}?keyword=${encodeURIComponent(groupTitle)}&item=${encodeURIComponent(val)}`);
+            sData.checklists.push({ keyword: groupTitle, item: val, row_number: 9999 });
             inp.value = '';
-            conf.disabled = false;
             inlineRow.classList.remove('visible');
             groupAddBtn.style.display = '';
-            await refreshSettings();
+            renderSettings();
+            conf.disabled = false;
+            refreshSettings();
           };
 
           groupAddBtn.onclick = () => {
@@ -844,8 +846,14 @@
       const sheet = row.tip !== undefined ? 'Keywords' : 'Checklists';
       const name  = row.keyword || row.item;
       if (!confirm(`Izbriši "${name}"?`)) return;
-      await fetch(`${N8N_SDEL}?sheet=${sheet}&row_number=${row.row_number}`);
-      await refreshSettings();
+      fetch(`${N8N_SDEL}?sheet=${sheet}&row_number=${row.row_number}`);
+      if (sheet === 'Keywords') {
+        sData.keywords = sData.keywords.filter(k => k.row_number !== row.row_number);
+      } else {
+        sData.checklists = sData.checklists.filter(c => c.row_number !== row.row_number);
+      }
+      renderSettings();
+      refreshSettings();
     }
 
     // ── BOTTOM SHEET ─────────────────────────────────────────────────────
