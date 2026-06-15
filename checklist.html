@@ -378,6 +378,20 @@
       font-weight: 600;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-primary:disabled { opacity: 0.6; cursor: default; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
     }
     .btn-cancel {
       padding: 14px 18px;
@@ -858,9 +872,15 @@
           const kw  = document.getElementById('f-kw').value.trim();
           const dni = document.getElementById('f-dni').value.trim();
           if (!kw) return;
+          const btn = document.getElementById('sheet-save');
+          if (btn.disabled) return;
+          btn.disabled = true;
+          btn.innerHTML = '<div class="spinner"></div> Shranjujem...';
           if (existing) await fetch(`${N8N_SDEL}?sheet=Keywords&row_number=${existing.row_number}`);
           await fetch(`${N8N_SADD}?tip=gmail&keyword=${encodeURIComponent(kw)}&dni_nazaj=${dni}`);
           closeSheet(); await refreshSettings();
+          btn.disabled = false;
+          btn.innerHTML = 'Shrani';
         };
       } else {
         fields.innerHTML =
@@ -870,9 +890,15 @@
           const kw  = document.getElementById('f-kw').value.trim();
           const itm = document.getElementById('f-item').value.trim();
           if (!kw || !itm) return;
+          const btn = document.getElementById('sheet-save');
+          if (btn.disabled) return;
+          btn.disabled = true;
+          btn.innerHTML = '<div class="spinner"></div> Shranjujem...';
           if (existing) await fetch(`${N8N_SDEL}?sheet=Checklists&row_number=${existing.row_number}`);
           await fetch(`${N8N_SADD}?keyword=${encodeURIComponent(kw)}&item=${encodeURIComponent(itm)}`);
           closeSheet(); await refreshSettings();
+          btn.disabled = false;
+          btn.innerHTML = 'Shrani';
         };
       }
 
