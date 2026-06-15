@@ -589,6 +589,7 @@
           btn.style.display = '';
           row.classList.remove('visible');
           tg?.HapticFeedback?.impactOccurred('light');
+          conf.disabled = false;
         } catch { conf.disabled = false; }
       };
       inp.addEventListener('keydown', e => { if (e.key === 'Enter') conf.click(); });
