@@ -716,6 +716,14 @@
       renderSettings();
     }
 
+    async function silentRefresh() {
+      try {
+        const res = await fetch(N8N_SGET);
+        const d = await res.json();
+        sData = Array.isArray(d) ? d[0] : d;
+      } catch {}
+    }
+
     function renderSettings() {
       const c = document.getElementById('settings-content');
       c.innerHTML = '';
@@ -853,7 +861,7 @@
         sData.checklists = sData.checklists.filter(c => c.row_number !== row.row_number);
       }
       renderSettings();
-      refreshSettings();
+      silentRefresh();
     }
 
     // ── BOTTOM SHEET ─────────────────────────────────────────────────────
@@ -894,7 +902,7 @@
           closeSheet(); renderSettings();
           btn.disabled = false;
           btn.innerHTML = 'Shrani';
-          refreshSettings();
+          silentRefresh();
         };
       } else {
         fields.innerHTML =
@@ -920,7 +928,7 @@
           closeSheet(); renderSettings();
           btn.disabled = false;
           btn.innerHTML = 'Shrani';
-          refreshSettings();
+          silentRefresh();
           btn.innerHTML = 'Shrani';
         };
       }
