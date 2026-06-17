@@ -507,8 +507,8 @@
       } catch { return []; }
     }
 
-    async function doToggle(item, status) {
-      await fetch(`${N8N_TOGGLE}?msg_id=${encodeURIComponent(msgId)}&item=${encodeURIComponent(item)}&status=${status}`);
+    async function doToggle(item, status, rowMsgId) {
+      await fetch(`${N8N_TOGGLE}?msg_id=${encodeURIComponent(rowMsgId || msgId)}&item=${encodeURIComponent(item)}&status=${status}`);
     }
 
     async function doAddCustom(eventTitle, eventTime, itemName) {
@@ -535,7 +535,7 @@
       }
     }
 
-    function makeItemEl(itemName, status, card) {
+    function makeItemEl(itemName, status, card, rowMsgId) {
       const el = document.createElement('div');
       el.className = `item ${status === 'done' ? 'done' : ''}`;
       el.innerHTML = `
@@ -552,7 +552,7 @@
         const next = was ? 'pending' : 'done';
         el.classList.toggle('done');
         updateCardProgress(card);
-        try { await doToggle(itemName, next); tg?.HapticFeedback?.impactOccurred('light'); }
+        try { await doToggle(itemName, next, rowMsgId); tg?.HapticFeedback?.impactOccurred('light'); }
         catch { el.classList.toggle('done'); updateCardProgress(card); }
         busy = false;
       });
@@ -682,7 +682,7 @@
 
             rows
               .filter(({ item }) => item !== '_no_items')
-              .forEach(({ item, status }) => body.appendChild(makeItemEl(item, status, card)));
+              .forEach(({ item, status, message_id }) => body.appendChild(makeItemEl(item, status, card, message_id)));
 
             card.appendChild(body);
             makeAddRow(body, title, time, card);
